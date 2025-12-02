@@ -19,9 +19,22 @@ export default function Hero() {
           legados, reduzem custos e escalam a nova geração do crédito.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button size="lg">Começar</Button>
-          <Button size="lg" variant="outline">
-            Saiba mais
+          <Button
+            size="lg"
+            onClick={() => {
+              window.location.href = '/sign-up';
+            }}
+          >
+            Cadastre-se
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => {
+              window.location.href = '/sign-in';
+            }}
+          >
+            Faça o login
           </Button>
         </div>
       </div>
