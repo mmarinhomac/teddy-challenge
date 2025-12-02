@@ -1,3 +1,10 @@
+import { AuthProvider } from '../context/AuthProvider';
+import SignUpMain from './components/Main';
+
 export default function SignUpModule() {
-  return <div>Sign Up Page</div>;
+  return (
+    <AuthProvider>
+      <SignUpMain />
+    </AuthProvider>
+  );
 }
