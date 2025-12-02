@@ -7,6 +7,9 @@ import {
 } from 'react-router-dom';
 
 import { DefaultProviders } from '@/providers/defaultProviders';
+import { PageLoading } from '@/shared/components/PageLoading';
+import NotFoundPage from '@/shared/components/NotFoundPage';
+import { PageError } from '@/shared/components/PageError';
 
 const LandingPage = lazy(() => import('../modules/home'));
 const SignInPage = lazy(() => import('../modules/auth/sign-in'));
@@ -15,17 +18,27 @@ const SignUpPage = lazy(() => import('../modules/auth/sign-up'));
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<DefaultProviders />}>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage />} errorElement={<PageError />} />
 
-      <Route path="/sign-in" element={<SignInPage />} />
-      <Route path="/sign-up" element={<SignUpPage />} />
+      <Route
+        path="/sign-in"
+        element={<SignInPage />}
+        errorElement={<PageError />}
+      />
+      <Route
+        path="/sign-up"
+        element={<SignUpPage />}
+        errorElement={<PageError />}
+      />
+
+      <Route path="*" element={<NotFoundPage />} />
     </Route>
   )
 );
 
 export function AppRoutes() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<PageLoading />}>
       <RouterProvider router={router} />
     </Suspense>
   );

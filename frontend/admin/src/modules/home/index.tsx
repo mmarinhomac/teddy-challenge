@@ -5,7 +5,7 @@ import Hero from './components/Hero';
 export default function HomeModule() {
   return (
     <main>
-      <div className="mx-auto max-w-6xl px-6 py-6">
+      <div className="mx-auto max-w-6xl px-6 py-6 mt-8">
         <div className="flex mb-4 h-10">
           <a
             href="/"
