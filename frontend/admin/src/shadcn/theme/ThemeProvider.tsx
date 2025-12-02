@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-// import { Toaster } from "../components/sonner";
+import { Toaster } from '../components/sonner';
 
 import './globals.css';
 
@@ -14,7 +14,7 @@ export const ThemeProvider = ({
     <>
       {children || <Outlet />}
 
-      {/* <Toaster /> */}
+      <Toaster />
     </>
   );
 };
