@@ -7,6 +7,7 @@ import { Button } from '@/shadcn/components/button';
 import { Input } from '@/shadcn/components/input';
 import { Label } from '@/shadcn/components/label';
 import { InputErrorMessage } from '@/shadcn/components/input-error-message';
+import { Logo } from '@/shared/components/Logo';
 
 const defaultValues: SignInDTO = {
   email: '',
@@ -23,9 +24,16 @@ export default function SignInMain() {
     <div className="min-h-screen w-full bg-linear-to-b from-background to-muted/30 flex items-center justify-center px-4 py-12 sm:px-6">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 h-10 w-10 rounded-full bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
-            <span className="text-primary text-lg">∞</span>
+          <div className="flex justify-center mb-4 h-10">
+            <a
+              href="/"
+              aria-label="Ir para página inicial"
+              className="inline-flex"
+            >
+              <Logo />
+            </a>
           </div>
+
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Entrar
           </h1>
@@ -82,6 +90,15 @@ export default function SignInMain() {
           <div className="text-center text-xs text-muted-foreground">
             Ao continuar, você concorda com nossos Termos e Política de
             Privacidade.
+          </div>
+          <div className="pt-2 text-center text-sm">
+            <span className="text-muted-foreground">Não tem conta?</span>{' '}
+            <a
+              href="/sign-up"
+              className="font-medium text-primary hover:underline"
+            >
+              Cadastre-se
+            </a>
           </div>
         </form>
       </div>
