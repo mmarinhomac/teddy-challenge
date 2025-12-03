@@ -1,14 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { useAuth } from '@teddy/auth';
 
 import accountService from '@teddy/api-services/account-service';
 import type { SignInDTO } from '../../types';
-import { toast } from 'sonner';
 
 type SignInForm = SignInDTO;
 
 export function useSignIn() {
+  const navigate = useNavigate();
+
   const { state, setLoading, setUser } = useAuth();
   const {
     register,
@@ -35,7 +38,7 @@ export function useSignIn() {
       toast.success('Login realizado com sucesso!');
 
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       }, 1500);
     } catch (err: any) {
       setUser(null);

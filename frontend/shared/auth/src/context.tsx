@@ -9,7 +9,7 @@ export const AuthContext = createContext<AuthContextValue | undefined>(
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: null,
-    loading: false,
+    loading: true,
   });
 
   const setLoading = (loading: boolean) => setState((s) => ({ ...s, loading }));

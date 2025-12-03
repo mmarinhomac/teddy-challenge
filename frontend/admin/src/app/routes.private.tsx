@@ -1,15 +1,26 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { debounceTimeout } from '@teddy/utils/time';
+
 import { useAuth } from '@teddy/auth';
 import { Logo } from '@/shared/components/Logo';
 
 export const PrivateRoute = () => {
   const { state } = useAuth();
 
+  const redirectToSignIn = () => {
+    window.location.href = '/sign-in';
+  };
+
   useEffect(() => {
-    if (!state?.user) {
-      window.location.href = '/sign-in';
+    if (!state?.user && !state?.loading) {
+      debounceTimeout(
+        'redirect-to-sign-in',
+        redirectToSignIn,
+        500,
+        'teddyAdminLayer'
+      );
     }
   }, [state]);
 

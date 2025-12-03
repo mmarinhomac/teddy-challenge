@@ -2,13 +2,22 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "types": ["react", "react-dom"]
+    "types": ["react", "react-dom"],
   },
   "files": [],
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": [
+    "src/**/*.ts", 
+    "src/**/*.tsx"
+  ],
   "references": [
     {
       "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "../utils/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-services/tsconfig.lib.json"
     }
   ]
 }

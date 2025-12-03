@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+
 import { useSignIn } from '../hooks/useSignIn';
 
 import { Button } from '@/shadcn/components/button';
@@ -5,9 +8,21 @@ import { Input } from '@/shadcn/components/input';
 import { Label } from '@/shadcn/components/label';
 import { InputErrorMessage } from '@/shadcn/components/input-error-message';
 import { Logo } from '@/shared/components/Logo';
+import { useAuth } from '../../../../../../shared/auth/src/context';
 
 export default function SignInMain() {
   const { onSubmit, loading, errors, register } = useSignIn();
+  const { state } = useAuth();
+
+  // Avoid showing sign-in page if already authenticated
+  useEffect(() => {
+    if (state?.user) {
+      toast.info('Você está autenticado. Redirecionando para o dashboard...');
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1500);
+    }
+  }, [state]);
 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-background to-muted/30 flex items-center justify-center px-4 py-12 sm:px-6">

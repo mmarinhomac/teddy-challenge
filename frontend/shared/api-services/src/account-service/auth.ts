@@ -37,6 +37,18 @@ export const signIn = async (
   }
 };
 
+export const me = async (): Promise<ApiResultProps<SignInResponse | null>> => {
+  try {
+    const { data } = await AccountServiceInstance.get<SignInResponse>(
+      '/auth/me'
+    );
+    return apiResult(data, null);
+  } catch (error) {
+    return apiResult(null, error);
+  }
+};
+
 export default {
   signIn,
+  me,
 };

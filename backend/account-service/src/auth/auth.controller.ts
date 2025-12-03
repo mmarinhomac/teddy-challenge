@@ -1,6 +1,14 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Public } from '../common/decorators/public.decorator';
@@ -16,5 +24,22 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   async login(@Request() req: any, @Body() _body: LoginDto) {
     return this.authService.login(req.user);
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  async me(
+    @Request() req: any,
+    @Headers('authorization') authorization?: string
+  ) {
+    const token =
+      authorization && authorization.toLowerCase().startsWith('bearer ')
+        ? authorization.slice(7)
+        : authorization ?? '';
+
+    return {
+      user: req.user,
+      access_token: token,
+    };
   }
 }
