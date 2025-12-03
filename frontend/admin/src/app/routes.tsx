@@ -6,6 +6,8 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
+import { PrivateRoute } from './routes.private';
+
 import { DefaultProviders } from '@/providers/defaultProviders';
 import { PageLoading } from '@/shared/components/PageLoading';
 import NotFoundPage from '@/shared/components/NotFoundPage';
@@ -14,6 +16,7 @@ import { PageError } from '@/shared/components/PageError';
 const LandingPage = lazy(() => import('../modules/home'));
 const SignInPage = lazy(() => import('../modules/auth/sign-in'));
 const SignUpPage = lazy(() => import('../modules/auth/sign-up'));
+const Dashboard = lazy(() => import('../modules/dashboard'));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +33,14 @@ const router = createBrowserRouter(
         element={<SignUpPage />}
         errorElement={<PageError />}
       />
+
+      <Route element={<PrivateRoute />}>
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+          errorElement={<PageError />}
+        />
+      </Route>
 
       <Route path="*" element={<NotFoundPage />} />
     </Route>
