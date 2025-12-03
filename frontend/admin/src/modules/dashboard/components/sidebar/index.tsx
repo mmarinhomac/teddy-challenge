@@ -11,7 +11,6 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
@@ -32,6 +31,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/shadcn/components/sidebar';
+import { Logo } from '@/shared/components/Logo';
 
 const data = {
   user: {
@@ -161,8 +161,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <div className="flex h-8 w-fit">
+                  <Logo />
+                </div>
+                <span className="text-base font-semibold">Teddy Admin</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
