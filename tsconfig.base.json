@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@teddy/auth": ["frontend/shared/auth/src"],
       "@teddy/api-services/*": ["frontend/shared/api-services/src/*"],
       "@teddy/utils/*": ["frontend/shared/utils/src/*"]
     }

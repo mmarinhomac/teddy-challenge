@@ -1,10 +1,11 @@
-import { AuthProvider } from '../context/AuthProvider';
+import { FormProvider } from './context/FormProvider';
+
 import SignInMain from './components/Main';
 
 export default function SignInModule() {
   return (
-    <AuthProvider>
+    <FormProvider>
       <SignInMain />
-    </AuthProvider>
+    </FormProvider>
   );
 }

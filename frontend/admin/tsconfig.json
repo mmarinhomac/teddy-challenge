@@ -31,6 +31,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@teddy/auth": ["../shared/auth/src"],
       "@teddy/api-services/*": ["../shared/api-services/src/*"],
       "@teddy/utils/*": ["../shared/utils/src/*"]
     }

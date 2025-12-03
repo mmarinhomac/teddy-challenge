@@ -1,4 +1,4 @@
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '@teddy/auth';
 import { useFormContext } from 'react-hook-form';
 import type { SignInDTO } from '../../types';
 import accountService from '@teddy/api-services/account-service';

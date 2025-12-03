@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import { ThemeProvider } from '../shadcn/theme/ThemeProvider';
+import { AuthLoader, AuthProvider } from '@teddy/auth';
 
 import CookieAccept from '@/shared/components/CookieAccept';
 
@@ -11,9 +12,12 @@ export const DefaultProviders = ({
 }) => {
   return (
     <ThemeProvider>
-      {children || <Outlet />}
+      <AuthProvider>
+        <AuthLoader />
+        {children || <Outlet />}
 
-      <CookieAccept />
+        <CookieAccept />
+      </AuthProvider>
     </ThemeProvider>
   );
 };
