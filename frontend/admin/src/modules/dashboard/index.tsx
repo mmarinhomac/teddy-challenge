@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { AppSidebar } from './components/sidebar';
 import { SidebarInset, SidebarProvider } from '@/shadcn/components/sidebar';
 import { SiteHeader } from './components/site-header';
@@ -10,8 +8,6 @@ import { DataTable } from './components/data-table';
 import data from './data.json';
 
 export default function Dashboard() {
-  const [menuSelected, setMenuSelected] = useState('dashboard');
-
   return (
     <SidebarProvider
       style={

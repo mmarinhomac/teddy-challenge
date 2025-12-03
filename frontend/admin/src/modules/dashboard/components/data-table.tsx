@@ -31,7 +31,6 @@ import {
   IconGripVertical,
   IconLayoutColumns,
   IconLoader,
-  IconPlus,
   IconTrendingUp,
 } from '@tabler/icons-react';
 import {
@@ -105,7 +104,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/shadcn/components/tabs';
-import { CreateClientDrawer } from '@/modules/clients/components/create-client';
+import { ClientsDrawer } from '@/modules/clients';
 
 export const schema = z.object({
   id: z.number(),
@@ -471,7 +470,7 @@ export function DataTable({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <CreateClientDrawer />
+          <ClientsDrawer />
         </div>
       </div>
       <TabsContent
