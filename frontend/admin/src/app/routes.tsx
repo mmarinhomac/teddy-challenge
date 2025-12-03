@@ -15,7 +15,6 @@ import { PageError } from '@/shared/components/PageError';
 
 const LandingPage = lazy(() => import('../modules/home'));
 const SignInPage = lazy(() => import('../modules/auth/sign-in'));
-const SignUpPage = lazy(() => import('../modules/auth/sign-up'));
 const Dashboard = lazy(() => import('../modules/dashboard'));
 
 const router = createBrowserRouter(
@@ -26,11 +25,6 @@ const router = createBrowserRouter(
       <Route
         path="/sign-in"
         element={<SignInPage />}
-        errorElement={<PageError />}
-      />
-      <Route
-        path="/sign-up"
-        element={<SignUpPage />}
         errorElement={<PageError />}
       />
 

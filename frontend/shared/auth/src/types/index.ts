@@ -1,6 +1,7 @@
 export type AuthUser = {
   id: string;
   email: string;
+  is_admin: boolean;
   name?: string;
 };
 

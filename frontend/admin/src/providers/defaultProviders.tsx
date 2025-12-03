@@ -14,6 +14,7 @@ export const DefaultProviders = ({
     <ThemeProvider>
       <AuthProvider>
         <AuthLoader />
+
         {children || <Outlet />}
 
         <CookieAccept />

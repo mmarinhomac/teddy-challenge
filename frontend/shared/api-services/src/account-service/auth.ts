@@ -10,7 +10,14 @@ export interface SignInDTO {
   password: string;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  is_admin: boolean;
+}
+
 export interface SignInResponse {
+  user: User;
   access_token: string;
 }
 
