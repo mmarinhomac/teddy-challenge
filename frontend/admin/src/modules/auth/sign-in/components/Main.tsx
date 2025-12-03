@@ -1,7 +1,4 @@
-import { useForm } from 'react-hook-form';
-
 import { useSignIn } from '../hooks/useSignIn';
-import type { SignInDTO } from '../../types';
 
 import { Button } from '@/shadcn/components/button';
 import { Input } from '@/shadcn/components/input';
@@ -9,16 +6,8 @@ import { Label } from '@/shadcn/components/label';
 import { InputErrorMessage } from '@/shadcn/components/input-error-message';
 import { Logo } from '@/shared/components/Logo';
 
-const defaultValues: SignInDTO = {
-  email: '',
-  password: '',
-};
-
 export default function SignInMain() {
-  const methods = useForm<SignInDTO>({ defaultValues });
-  const { register } = methods;
-
-  const { onSubmit, loading, errors } = useSignIn();
+  const { onSubmit, loading, errors, register } = useSignIn();
 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-background to-muted/30 flex items-center justify-center px-4 py-12 sm:px-6">

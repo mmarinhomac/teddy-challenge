@@ -30,7 +30,9 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@teddy/api-services/*": ["../shared/api-services/src/*"],
+      "@teddy/utils/*": ["../shared/utils/src/*"]
     }
   },
   "files": [],

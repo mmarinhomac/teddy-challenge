@@ -1,32 +1,38 @@
 import { useAuth } from '../../hooks/useAuth';
 import { useFormContext } from 'react-hook-form';
 import type { SignInDTO } from '../../types';
-import { mockSignIn } from '../../mocks/authService';
+import accountService from '@teddy/api-services/account-service';
 
 type SignInForm = SignInDTO;
 
 export function useSignIn() {
   const { state, setLoading, setUser } = useAuth();
   const {
+    register,
     handleSubmit,
-    setError,
     clearErrors,
     formState: { errors },
+    getValues,
   } = useFormContext<SignInForm>();
 
   const onSubmit = handleSubmit(async (values) => {
-    clearErrors();
-    setLoading(true);
-
     try {
-      const user = await mockSignIn(values);
-      setUser(user);
+      console.log('Submitting', values);
+      const valuesFromGet = getValues();
+      console.log('Values from getValues:', valuesFromGet);
+      clearErrors();
+      setLoading(true);
+
+      const { data, error } = await accountService.auth.signIn(values);
+
+      if (error || !data) {
+        console.log('Sign-in error:', error);
+
+        return;
+      }
+
+      console.log('Sign-in successful:', data);
     } catch (err: any) {
-      const e =
-        err?.code && err?.message
-          ? err
-          : { code: 'UNKNOWN', message: 'Erro inesperado.' };
-      setError('email', e.message);
       setUser(null);
     } finally {
       setLoading(false);
@@ -37,5 +43,6 @@ export function useSignIn() {
     loading: state.loading,
     errors: errors,
     onSubmit,
+    register,
   };
 }
