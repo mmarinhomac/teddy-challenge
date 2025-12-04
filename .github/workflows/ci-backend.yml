@@ -36,18 +36,15 @@ jobs:
 
       # Lint affected projects
       - name: Run Affected Lint
-        # run: pnpm nx affected --target=lint --base=$NX_BASE --head=$NX_HEAD
-        run: pnpm nx run-many --target=lint --projects=account-service
+        run: pnpm nx affected --target=lint --base=$NX_BASE --head=$NX_HEAD
 
       # Run unit tests for account-service
       - name: Run Affected Backend Tests
-        # run: pnpm nx affected --target=test --base=$NX_BASE --head=$NX_HEAD --projects=account-service
-        run: pnpm nx run-many --target=test --projects=account-service
+        run: pnpm nx affected --target=test --base=$NX_BASE --head=$NX_HEAD --projects=account-service
 
       # Build account-service
       - name: Build Affected Backend
-        # run: pnpm nx affected --target=build --base=$NX_BASE --head=$NX_HEAD --projects=account-service
-        run: pnpm nx run-many --target=build --projects=account-service
+        run: pnpm nx affected --target=build --base=$NX_BASE --head=$NX_HEAD --projects=account-service
 
   trigger-cd:
     name: Trigger CD Deployment
