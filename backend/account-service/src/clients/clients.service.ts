@@ -1,14 +1,17 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
+import Redis from 'ioredis';
 
 import { Client } from './client.entity';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { REDIS_CLIENT } from '../config/redis/redis.module';
 
 const normalizeDocument = (value: string) => value.replace(/\D+/g, '');
 
@@ -16,7 +19,9 @@ const normalizeDocument = (value: string) => value.replace(/\D+/g, '');
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
-    private readonly clientsRepository: Repository<Client>
+    private readonly clientsRepository: Repository<Client>,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis
   ) {}
 
   async create(dto: CreateClientDto): Promise<Client> {
@@ -37,17 +42,16 @@ export class ClientsService {
   }
 
   async findOneWithCounter(id: string): Promise<Client> {
+    const redisKey = `client:views:${id}`;
+    const currentViewCount = await this.redisClient.incr(redisKey);
+
     const client = await this.clientsRepository.findOne({ where: { id } });
     if (!client) {
       throw new NotFoundException('Client not found');
     }
 
-    await this.clientsRepository.increment({ id }, 'viewCount', 1);
-    const updated = await this.clientsRepository.findOne({ where: { id } });
-    if (!updated) {
-      throw new NotFoundException('Client not found');
-    }
-    return updated;
+    client.viewCount = currentViewCount;
+    return client;
   }
 
   async update(id: string, dto: UpdateClientDto): Promise<Client> {

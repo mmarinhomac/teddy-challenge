@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppConfigModule } from '../config/config.module';
 
@@ -14,6 +15,7 @@ import { DatabaseModule } from '../config/database/database.module';
 @Module({
   imports: [
     AppConfigModule,
+    ScheduleModule.forRoot(),
     DatabaseModule,
     AuthModule,
     ClientsModule,
