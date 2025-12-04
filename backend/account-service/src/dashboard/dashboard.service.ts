@@ -21,7 +21,7 @@ export interface DashboardResponse {
   }>;
 }
 
-const GROWTH_WINDOW_DAYS = 6; // last 7 days including today
+const GROWTH_WINDOW_DAYS = 60;
 
 @Injectable()
 export class DashboardService {
