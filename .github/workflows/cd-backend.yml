@@ -28,7 +28,7 @@ jobs:
           docker build \
             -t $IMAGE_NAME:$IMAGE_TAG \
             -f backend/account-service/Dockerfile \
-            backend/account-service
+            .
 
       - name: Push image
         run: |

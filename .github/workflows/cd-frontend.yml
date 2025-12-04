@@ -24,11 +24,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-          run_install: true
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Build frontend
         run: pnpm nx build $NX_APP_NAME --prod
