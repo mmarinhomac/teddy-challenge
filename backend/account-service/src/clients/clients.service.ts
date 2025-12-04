@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 
 import { Client } from './client.entity';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -21,7 +25,11 @@ export class ClientsService {
       status: dto.status ?? 'active',
       document: normalizeDocument(dto.document),
     });
-    return this.clientsRepository.save(client);
+    try {
+      return await this.clientsRepository.save(client);
+    } catch (error) {
+      this.handleUniqueConstraintError(error);
+    }
   }
 
   async findAll(): Promise<Client[]> {
@@ -57,7 +65,11 @@ export class ClientsService {
       throw new NotFoundException('Client not found');
     }
 
-    return this.clientsRepository.save(client);
+    try {
+      return await this.clientsRepository.save(client);
+    } catch (error) {
+      this.handleUniqueConstraintError(error);
+    }
   }
 
   async softDelete(id: string): Promise<void> {
@@ -65,5 +77,24 @@ export class ClientsService {
     if (!result.affected) {
       throw new NotFoundException('Client not found');
     }
+  }
+
+  private handleUniqueConstraintError(error: unknown): never {
+    if (
+      error instanceof QueryFailedError &&
+      error.driverError &&
+      error.driverError.code === '23505'
+    ) {
+      const detail = (error.driverError.detail as string) ?? '';
+      if (detail.includes('email')) {
+        throw new BadRequestException('E-mail já está em uso.');
+      }
+      if (detail.includes('document')) {
+        throw new BadRequestException('Documento já está em uso.');
+      }
+      throw new BadRequestException('Cliente já cadastrado.');
+    }
+
+    throw error;
   }
 }
