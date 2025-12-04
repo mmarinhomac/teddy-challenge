@@ -3,13 +3,17 @@ import { INestApplicationContext } from '@nestjs/common';
 
 import { AppModule } from '../../app/app.module';
 import { seedAdminUser } from './admin-user.seed';
+import { seedClients } from './client.seed';
 
 type SeedRunner = {
   name: string;
   run: (app: INestApplicationContext) => Promise<void>;
 };
 
-const seeds: SeedRunner[] = [{ name: 'admin-user', run: seedAdminUser }];
+const seeds: SeedRunner[] = [
+  { name: 'admin-user', run: seedAdminUser },
+  { name: 'clients', run: seedClients },
+];
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.createApplicationContext(AppModule, {
