@@ -4,6 +4,8 @@ import {
   Column,
   BeforeInsert,
   BeforeUpdate,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -20,6 +22,12 @@ export class User {
 
   @Column({ default: false })
   is_admin: boolean;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 
   @BeforeInsert()
   @BeforeUpdate()

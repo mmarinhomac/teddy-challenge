@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ClientsModule } from '../clients/clients.module';
 import { RedisModule } from '../config/redis/redis.module';
 import { DatabaseModule } from '../config/database/database.module';
+import { DashboardModule } from '../dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DatabaseModule } from '../config/database/database.module';
     AuthModule,
     ClientsModule,
     RedisModule,
+    DashboardModule,
   ],
   controllers: [RootController, HealthController],
   providers: [
