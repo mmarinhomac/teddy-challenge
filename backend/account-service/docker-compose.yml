@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   api:
     build:
@@ -13,10 +15,13 @@ services:
       DB_PASS: ${DB_PASS:?DB_PASS is required}
       DB_NAME: ${DB_NAME:?DB_NAME is required}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      REDIS_HOST: ${REDIS_HOST:?REDIS_HOST is required}
+      REDIS_PORT: ${REDIS_PORT:?REDIS_PORT is required}
     ports:
       - '3000:3000'
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:15
@@ -30,5 +35,15 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7-alpine
+    hostname: redis
+    command: redis-server --appendonly yes
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
 volumes:
   db_data:
+  redis_data:
