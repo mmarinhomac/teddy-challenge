@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      NX_APP_NAME: admin
-      DIST_PATH: dist/frontend/admin
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       DEPLOY_TAG: ${{ github.event.inputs.tag }}
@@ -30,12 +28,6 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Install pnpm dependencies
-        run: pnpm install
-
-      - name: Build frontend
-        run: pnpm nx build $NX_APP_NAME --prod
-
       - name: Pull Vercel environment
         run: |
           pnpm dlx vercel pull --yes --environment=production \
@@ -43,7 +35,7 @@ jobs:
 
       - name: Deploy to Vercel
         run: |
-          pnpm dlx vercel deploy $DIST_PATH \
+          pnpm dlx vercel deploy \
             --prod \
             --yes \
             --token ${{ secrets.VERCEL_TOKEN }} \

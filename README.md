@@ -1,91 +1,63 @@
-# TeddyChallenge
+# Teddy Challenge MVP: Scalable Financial API & Admin Dashboard
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+> Building a production-bound MVP that stays operational under load requires ruthless prioritization. This document captures the architectural guardrails, CI/CD discipline, and the most contentious scalability decision so new contributors know **why** things are wired the way they are.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## 🔍 Project Overview & Key Decisions
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **Objective:** Implement a secure, scalable, and observable client account service with an asynchronous, write-efficient view counter feeding the Admin Dashboard.
+- **Stakeholders:** Growth (fast iteration), Compliance (auditable storage), SRE (operational calm during spikes). Decisions below balance these often conflicting priorities.
+- **Key Principles:** Zero trust for ingress traffic, horizontal scaling over premature optimization, and measurable blast radius for each change.
 
-## Build Backend on Docker 
-
-```sh
-docker compose -f ./backend/account-service/docker-compose.yml up -d --build
-```
-
-## Build Frontend on Docker
-
-To build the library use:
-
-```sh
-docker compose -f ./frontend/admin/docker-compose.yml up -d --build
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+**Monorepo Topology (Nx)**
 
 ```
-npx nx release
+apps/
+	backend/account-service      (NestJS + TypeORM + Redis client)
+	frontend/admin               (React + Vite + shadcn/ui)
+libs/
+	shared/api-services          (OpenAPI-ready fetch clients)
+	shared/auth                  (Context + guards)
+	shared/utils                 (Cross-cutting helpers)
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+> 📌 **Decision memo:** Kept everything inside a single Nx workspace to exploit `nx affected` graph intelligence and enforce shared lint/config consistency. Drawback: contributors must understand Nx commands before touching production paths.
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## ☁️ Production Architecture: Scalability & Resilience (AWS)
+****
 
-## Set up CI!
+The stack favors managed services to shrink the operational surface area. Each component is picked for autoscaling hooks, native observability, and least-privilege integrations via IAM roles.
 
-### Step 1
+| Component | Technology | Rationale (Trade-offs & Security) |
+| :--- | :--- | :--- |
+| **API Gateway** | AWS API Gateway / Application Load Balancer (ALB) | Provides WAF, HTTPS termination, and unified entry point. Mitigates DDoS risks. |
+| **Backend Compute** | **AWS ECS (Fargate)** | Serverless containers. Chosen over EC2 for reduced operational overhead and horizontal scaling based on API load. |
+| **Database** | **AWS RDS (PostgreSQL)** | Managed service provides automatic backups, failover (Multi-AZ), and reduced patching effort, ensuring data integrity. |
+| **High-Speed Cache** | **AWS ElastiCache (Redis)** | Dedicated managed cache layer to offload the high-volume `view_count` increment operations from the primary DB. |
+| **Frontend Hosting** | **AWS S3 + CloudFront** | Static hosting (S3) combined with a global Content Delivery Network (CloudFront) for low latency and high availability of the Admin Dashboard assets. |
 
-To connect to Nx Cloud, run the following command:
+> ⚠️ **Critical constraint:** Keep VPC endpoints private—no Redis or Postgres exposure over the public internet. Every subnet is tied to security groups that mirror principle-of-least-privilege.
 
-```sh
-npx nx connect
-```
+## ⚙️ CI/CD Strategy: The Dependency Chain
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+> 💡 **Optimized Performance:** All CI steps use `nx affected` to guarantee that only the code of the project modified (FE or BE) is tested and built, dramatically reducing pipeline execution time and cost.
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+1. **CI Backend (`ci-backend.yml`):** Executes lint, unit tests, and a production build for `account-service`. Fails fast on type or schema drift before artifacts are produced.
+2. **Trigger Event:** A successful merge to `main` emits a `workflow_dispatch` to CD workflows via a scoped PAT stored in GitHub Secrets. This isolates deployment privileges from PR authors.
+3. **CD Backend (`cd-backend.yml`):** Authenticates to the container registry, builds the NestJS image, tags it with the commit SHA, and pushes it. ECS task definitions are updated atomically to avoid partial rollouts.
+4. **CD Frontend (`cd-frontend.yml`):** Runs a production Vite build, executes `aws s3 sync` to the dashboard bucket, and invalidates CloudFront so operators see the new dashboard within minutes.
 
-### Step 2
+> 🔐 **Secrets posture:** GitHub Environments gate deployments with required reviewers and timeouts; AWS credentials are short-lived OIDC tokens rather than long-lived keys.
 
-Use the following command to configure a CI workflow for your workspace:
+## 📈 Scalability Deep Dive: The Asynchronous View Counter
 
-```sh
-npx nx g ci-workflow
-```
+**Problem:** Early prototypes wrote `UPDATE clients SET view_count = view_count + 1` on every read. Under bursty traffic this caused lock contention, transaction bloat, and backpressure on unrelated writes.
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Solution:**
 
-## Install Nx Console
+1. **Read Path:** `GET /clients/:id` performs the standard DB lookup, then issues an atomic `INCR` on Redis (`client:{id}:view_count`). Reads stay sub-millisecond and linearly scalable with sharded Redis if needed.
+2. **Write Path:** A scheduled NestJS job (`@nestjs/schedule`) runs every 5 minutes. It executes `redisClient.getdel(key)` to atomically fetch-and-reset each counter, then pushes batched `UPDATE clients SET view_count = view_count + :delta WHERE id = :id` statements through a single DB transaction.
+3. **Observability:** Prometheus scrapes queue depth (Redis keys pending) and job duration to alert when the flush threatens to miss its window.
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+> **Trade-off Analysis:** This solution favors **read performance** and eventual consistency (the database may lag the cache by up to 5 minutes) over immediate consistency, which is an acceptable trade-off for a view counter metric.
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Result:** DB write pressure drops to predictable, batched bursts, Redis absorbs the hot path, and operations can scale `view_count` tracking independently from the primary CRUD workload.
