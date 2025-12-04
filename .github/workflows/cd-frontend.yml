@@ -42,10 +42,10 @@ jobs:
             --token ${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel
+        working-directory: frontend/admin
         run: |
-          pnpm dlx vercel deploy $DIST_PATH \
-            --org $VERCEL_ORG_ID \
-            --project $VERCEL_PROJECT_ID \
+          pnpm dlx vercel deploy ../$DIST_PATH \
+            --prebuilt \
             --prod \
             --yes \
             --token ${{ secrets.VERCEL_TOKEN }} \
