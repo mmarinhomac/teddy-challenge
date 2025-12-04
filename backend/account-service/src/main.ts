@@ -22,8 +22,10 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Teddy Open Finance API')
-    .setDescription('MVP - Auth, Clients, Metrics')
+    .setTitle('Teddy Open Finance - Account Service API')
+    .setDescription(
+      'API do desafio Teddy Open Finance para gerenciamento de contas e clientes.'
+    )
     .setVersion('1.0.0')
     .addBearerAuth()
     .build();
