@@ -6,18 +6,18 @@
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
-## Generate a library
+## Build Backend on Docker 
 
 ```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+docker compose -f ./backend/account-service/docker-compose.yml up -d --build
 ```
 
-## Run tasks
+## Build Frontend on Docker
 
 To build the library use:
 
 ```sh
-npx nx build pkg1
+docker compose -f ./frontend/admin/docker-compose.yml up -d --build
 ```
 
 To run any task with Nx use:

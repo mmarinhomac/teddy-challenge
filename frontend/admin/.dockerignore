@@ -3,5 +3,4 @@ dist
 Dockerfile
 docker-compose.yml
 .env
-account-service-e2e
-frontend
+backend
