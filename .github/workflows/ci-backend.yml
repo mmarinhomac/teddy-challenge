@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: build-and-test
-    if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    if: success() && (github.ref == 'refs/heads/main')
     steps:
       - name: Trigger CD Backend Workflow
         uses: actions/github-script@v6
