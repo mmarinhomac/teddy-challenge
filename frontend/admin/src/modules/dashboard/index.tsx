@@ -4,8 +4,12 @@ import { SiteHeader } from './components/site-header';
 import { SectionCards } from './components/section-cards';
 import { ChartAreaInteractive } from './components/chart-area-interactive';
 import { ClientsTable } from '../clients';
+import { DashboardProvider } from './context';
+import { useDashboardActions } from './hooks/useDashboardActions';
 
-export default function Dashboard() {
+function DashboardContent() {
+  useDashboardActions();
+
   return (
     <SidebarProvider
       style={
@@ -32,5 +36,13 @@ export default function Dashboard() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <DashboardProvider>
+      <DashboardContent />
+    </DashboardProvider>
   );
 }
