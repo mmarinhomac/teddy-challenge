@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 
+import type { Client } from '@teddy/api-services/account-service/clients';
+
 export type ClientStatus = 'active' | 'inactive';
 
 export type ClientFormValues = {
@@ -15,6 +17,14 @@ interface ClientsContextValue {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   drawerOpen: boolean;
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  clients: Client[];
+  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
+  clientsLoading: boolean;
+  setClientsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  clientsLoaded: boolean;
+  setClientsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedClient: Client | null;
+  setSelectedClient: React.Dispatch<React.SetStateAction<Client | null>>;
   form: UseFormReturn<ClientFormValues>;
 }
 
@@ -27,6 +37,10 @@ interface ClientsProviderProps {
 export function ClientsProvider({ children }: ClientsProviderProps) {
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
+  const [clientsLoaded, setClientsLoaded] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   const form = useForm<ClientFormValues>({
     mode: 'onSubmit',
@@ -43,6 +57,14 @@ export function ClientsProvider({ children }: ClientsProviderProps) {
     setLoading,
     drawerOpen,
     setDrawerOpen,
+    clients,
+    setClients,
+    clientsLoading,
+    setClientsLoading,
+    clientsLoaded,
+    setClientsLoaded,
+    selectedClient,
+    setSelectedClient,
     form,
   };
 

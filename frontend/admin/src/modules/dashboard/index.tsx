@@ -3,9 +3,7 @@ import { SidebarInset, SidebarProvider } from '@/shadcn/components/sidebar';
 import { SiteHeader } from './components/site-header';
 import { SectionCards } from './components/section-cards';
 import { ChartAreaInteractive } from './components/chart-area-interactive';
-import { DataTable } from './components/data-table';
-
-import data from './data.json';
+import { ClientsTable } from '../clients';
 
 export default function Dashboard() {
   return (
@@ -28,7 +26,7 @@ export default function Dashboard() {
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
-              <DataTable data={data} />
+              <ClientsTable />
             </div>
           </div>
         </div>

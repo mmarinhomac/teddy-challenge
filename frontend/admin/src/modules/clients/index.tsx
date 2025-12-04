@@ -1,11 +1,13 @@
-import { CreateClientDrawer } from './components/create-client';
+import { DataTable } from './components/data-table';
 
 import { ClientsProvider } from './context';
+import { ClientLoader } from './loader';
 
-export function ClientsDrawer() {
+export function ClientsTable() {
   return (
     <ClientsProvider>
-      <CreateClientDrawer />
+      <ClientLoader />
+      <DataTable />
     </ClientsProvider>
   );
 }
