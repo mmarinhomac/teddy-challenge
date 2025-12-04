@@ -1,0 +1,48 @@
+name: CD Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-frontend:
+    name: Build and Deploy Frontend
+    runs-on: ubuntu-latest
+    env:
+      NX_APP_NAME: admin
+      DIST_PATH: dist/admin
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          run_install: true
+
+      - name: Build frontend
+        run: pnpm nx build $NX_APP_NAME --prod
+
+      - name: Pull Vercel environment
+        run: |
+          pnpm dlx vercel pull --yes --environment=production \
+            --token ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel
+        run: |
+          pnpm dlx vercel deploy $DIST_PATH \
+            --org $VERCEL_ORG_ID \
+            --project $VERCEL_PROJECT_ID \
+            --prod \
+            --yes \
+            --token ${{ secrets.VERCEL_TOKEN }}
