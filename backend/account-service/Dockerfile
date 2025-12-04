@@ -1,23 +1,25 @@
 FROM node:22-alpine AS builder
-
 WORKDIR /app
 
-COPY package.json nx.json tsconfig.base.json ./
+ENV PNPM_HOME=/usr/local/share/pnpm
+ENV PATH=${PNPM_HOME}:$PATH
 
-RUN npm install
+RUN corepack enable
 
-COPY . .
+COPY package.json pnpm-lock.yaml nx.json tsconfig.base.json ./
 
-RUN npx nx build account-service
+RUN pnpm install
 
-# Stage de produção
+COPY backend backend
+
+RUN pnpm nx build account-service --prod
+
 FROM node:22-alpine AS runner
-WORKDIR /app
+
+COPY --from=builder /app/dist/backend/account-service/package.json ./package.json
+COPY --from=builder /app/dist/backend/account-service ./dist
 
 ENV NODE_ENV=production
 EXPOSE 3000
-
-COPY --from=builder /app/dist/backend/account-service ./dist
-COPY --from=builder /app/node_modules ./node_modules
 
 CMD ["node", "dist/main.js"]
