@@ -76,11 +76,11 @@
         }
       }
     },
-    "seed": {
+    "seeds": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "backend/account-service",
-        "command": "ts-node --project tsconfig.app.json src/seed.ts"
+        "command": "ts-node --project tsconfig.app.json src/database/seeds/index.ts"
       }
     }
   }
