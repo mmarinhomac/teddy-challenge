@@ -6,7 +6,7 @@ ENV PATH=${PNPM_HOME}:$PATH
 
 RUN corepack enable
 
-COPY package.json pnpm-lock.yaml nx.json tsconfig.base.json ./
+COPY package.json nx.json tsconfig.base.json ./
 
 RUN pnpm install
 
@@ -16,8 +16,8 @@ RUN pnpm nx build account-service --prod
 
 FROM node:22-alpine AS runner
 
-COPY --from=builder /app/dist/backend/account-service/package.json ./package.json
 COPY --from=builder /app/dist/backend/account-service ./dist
+COPY --from=builder /app/node_modules ./node_modules
 
 ENV NODE_ENV=production
 EXPOSE 3000

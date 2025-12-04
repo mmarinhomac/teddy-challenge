@@ -13,7 +13,7 @@ services:
       DB_PASS: ${DB_PASS:?DB_PASS is required}
       DB_NAME: ${DB_NAME:?DB_NAME is required}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
-      REDIS_HOST: ${REDIS_HOST:?REDIS_HOST is required}
+      REDIS_HOST: redis
       REDIS_PORT: ${REDIS_PORT:?REDIS_PORT is required}
     ports:
       - '3000:3000'

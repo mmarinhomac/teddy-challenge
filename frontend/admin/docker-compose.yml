@@ -1,0 +1,7 @@
+services:
+  admin:
+    build:
+      context: ../..
+      dockerfile: frontend/admin/Dockerfile
+    ports:
+      - '5173:80'
