@@ -15,24 +15,55 @@ export function useClientActions() {
     setLoading,
   } = useClient();
 
+  const resolveErrorMessage = useCallback(
+    (error: unknown, fallback: string) => {
+      if (error && typeof error === 'object') {
+        type MaybeAxiosError = {
+          response?: {
+            data?: {
+              message?: string;
+            };
+          };
+        };
+
+        const message = (error as MaybeAxiosError).response?.data?.message;
+        if (typeof message === 'string' && message.trim().length > 0) {
+          return message;
+        }
+      }
+      return fallback;
+    },
+    []
+  );
+
   const listClients = useCallback(async () => {
     try {
       setClientsLoading(true);
       const { data, error } = await accountService.clients.list();
       if (error) {
-        throw error;
+        const message = resolveErrorMessage(
+          error,
+          'Não foi possível carregar os clientes.'
+        );
+        toast.error(message);
+        setClientsLoaded(false);
+        return;
       }
 
       setClients(data ?? []);
       setClientsLoaded(true);
     } catch (error) {
       console.error('[clients] list error', error);
-      toast.error('Não foi possível carregar os clientes.');
+      const message = resolveErrorMessage(
+        error,
+        'Não foi possível carregar os clientes.'
+      );
+      toast.error(message);
       setClientsLoaded(false);
     } finally {
       setClientsLoading(false);
     }
-  }, [setClients, setClientsLoaded, setClientsLoading]);
+  }, [resolveErrorMessage, setClients, setClientsLoaded, setClientsLoading]);
 
   const getClientById = useCallback(
     async (id: string): Promise<Client | null> => {
@@ -40,20 +71,30 @@ export function useClientActions() {
         setLoading(true);
         const { data, error } = await accountService.clients.findById(id);
         if (error || !data) {
-          throw error ?? new Error('Cliente não encontrado.');
+          const message = resolveErrorMessage(
+            error,
+            'Não foi possível carregar os dados do cliente.'
+          );
+          toast.error(message);
+          setSelectedClient(null);
+          return null;
         }
 
         setSelectedClient(data);
         return data;
       } catch (error) {
         console.error('[clients] detail error', error);
-        toast.error('Não foi possível carregar os dados do cliente.');
+        const message = resolveErrorMessage(
+          error,
+          'Não foi possível carregar os dados do cliente.'
+        );
+        toast.error(message);
         return null;
       } finally {
         setLoading(false);
       }
     },
-    [setLoading, setSelectedClient]
+    [resolveErrorMessage, setLoading, setSelectedClient]
   );
 
   const deleteClient = useCallback(
@@ -62,7 +103,12 @@ export function useClientActions() {
         setLoading(true);
         const { error } = await accountService.clients.remove(id);
         if (error) {
-          throw error;
+          const message = resolveErrorMessage(
+            error,
+            'Não foi possível remover o cliente.'
+          );
+          toast.error(message);
+          return false;
         }
 
         setClients((prev) => prev.filter((client) => client.id !== id));
@@ -70,13 +116,17 @@ export function useClientActions() {
         return true;
       } catch (error) {
         console.error('[clients] delete error', error);
-        toast.error('Não foi possível remover o cliente.');
+        const message = resolveErrorMessage(
+          error,
+          'Não foi possível remover o cliente.'
+        );
+        toast.error(message);
         return false;
       } finally {
         setLoading(false);
       }
     },
-    [setClients, setLoading]
+    [resolveErrorMessage, setClients, setLoading]
   );
 
   return {
