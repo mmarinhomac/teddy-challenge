@@ -36,13 +36,15 @@ jobs:
 
       # Lint affected projects
       - name: Run Affected Lint
-        # Assume o projeto frontend se chama 'admin' ou nome similar no Nx
-        run: pnpm nx affected --target=lint --base=$NX_BASE --head=$NX_HEAD
-
+        # run: pnpm nx affected --target=lint --base=$NX_BASE --head=$NX_HEAD
+        run: pnpm nx run-many --target=lint --projects=admin
+      
       # Run unit tests for admin
       - name: Run Affected Frontend Tests
-        run: pnpm nx affected --target=test --base=$NX_BASE --head=$NX_HEAD --projects=admin 
-
+        # run: pnpm nx affected --target=test --base=$NX_BASE --head=$NX_HEAD --projects=admin 
+        run: pnpm nx run-many --target=test --projects=admin
+      
       # Build admin
       - name: Build Affected Frontend
-        run: pnpm nx affected --target=build --base=$NX_BASE --head=$NX_HEAD --projects=admin
+        # run: pnpm nx affected --target=build --base=$NX_BASE --head=$NX_HEAD --projects=admin
+        run: pnpm nx run-many --target=build --projects=admin
