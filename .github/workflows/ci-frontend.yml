@@ -1,0 +1,48 @@
+# .github/workflows/ci-frontend.yml
+
+name: CI - Frontend (React App)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history for Nx affected commands
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install pnpm dependencies
+        run: pnpm install
+
+      # Determine affected projects
+      - name: Set up NX Base and Head SHAs
+        uses: nrwl/nx-set-shas@v4
+
+      # Lint affected projects
+      - name: Run Affected Lint
+        # Assume o projeto frontend se chama 'admin' ou nome similar no Nx
+        run: pnpm nx affected --target=lint --base=$NX_BASE --head=$NX_HEAD
+
+      # Run unit tests for admin
+      - name: Run Affected Frontend Tests
+        run: pnpm nx affected --target=test --base=$NX_BASE --head=$NX_HEAD --projects=admin 
+
+      # Build admin
+      - name: Build Affected Frontend
+        run: pnpm nx affected --target=build --base=$NX_BASE --head=$NX_HEAD --projects=admin
