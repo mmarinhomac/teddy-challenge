@@ -56,8 +56,32 @@ export function useClientActions() {
     [setLoading, setSelectedClient]
   );
 
+  const deleteClient = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        setLoading(true);
+        const { error } = await accountService.clients.remove(id);
+        if (error) {
+          throw error;
+        }
+
+        setClients((prev) => prev.filter((client) => client.id !== id));
+        toast.success('Cliente removido com sucesso.');
+        return true;
+      } catch (error) {
+        console.error('[clients] delete error', error);
+        toast.error('Não foi possível remover o cliente.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setClients, setLoading]
+  );
+
   return {
     listClients,
     getClientById,
+    deleteClient,
   };
 }
