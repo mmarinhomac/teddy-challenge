@@ -14,16 +14,16 @@ export default function Footer() {
             Todos os direitos reservados.
           </p>
           <nav className="flex items-center gap-5">
-            <a href="#" className="hover:text-foreground">
+            <a href="/privacy" className="hover:text-foreground">
               Privacidade
             </a>
-            <a href="#" className="hover:text-foreground">
+            <a href="/terms" className="hover:text-foreground">
               Termos de Serviço
             </a>
-            <a href="#" className="hover:text-foreground">
+            <a href="/contact" className="hover:text-foreground">
               Contato
             </a>
-            <a href="#" className="hover:text-foreground">
+            <a href="/careers" className="hover:text-foreground">
               Carreiras
             </a>
           </nav>

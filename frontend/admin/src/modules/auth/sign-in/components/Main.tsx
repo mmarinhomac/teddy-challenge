@@ -8,7 +8,7 @@ import { Input } from '@/shadcn/components/input';
 import { Label } from '@/shadcn/components/label';
 import { InputErrorMessage } from '@/shadcn/components/input-error-message';
 import { Logo } from '@/shared/components/Logo';
-import { useAuth } from '../../../../../../shared/auth/src/context';
+import { useAuth } from '@teddy/auth';
 
 export default function SignInMain() {
   const { onSubmit, loading, errors, register } = useSignIn();

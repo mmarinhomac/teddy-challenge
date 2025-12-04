@@ -40,27 +40,27 @@ const data = {
   navMain: [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/dashboard',
       icon: IconDashboard,
     },
     {
       title: 'Lifecycle',
-      url: '#',
+      url: '/lifecycle',
       icon: IconListDetails,
     },
     {
       title: 'Analytics',
-      url: '#',
+      url: '/analytics',
       icon: IconChartBar,
     },
     {
       title: 'Projects',
-      url: '#',
+      url: '/projects',
       icon: IconFolder,
     },
     {
       title: 'Team',
-      url: '#',
+      url: '/team',
       icon: IconUsers,
     },
   ],
@@ -69,45 +69,45 @@ const data = {
       title: 'Capture',
       icon: IconCamera,
       isActive: true,
-      url: '#',
+      url: '/capture',
       items: [
         {
           title: 'Active Proposals',
-          url: '#',
+          url: '/capture/active',
         },
         {
           title: 'Archived',
-          url: '#',
+          url: '/capture/archived',
         },
       ],
     },
     {
       title: 'Proposal',
       icon: IconFileDescription,
-      url: '#',
+      url: '/proposal',
       items: [
         {
           title: 'Active Proposals',
-          url: '#',
+          url: '/proposal/active',
         },
         {
           title: 'Archived',
-          url: '#',
+          url: '/proposal/archived',
         },
       ],
     },
     {
       title: 'Prompts',
       icon: IconFileAi,
-      url: '#',
+      url: '/prompts',
       items: [
         {
           title: 'Active Proposals',
-          url: '#',
+          url: '/prompts/active',
         },
         {
           title: 'Archived',
-          url: '#',
+          url: '/prompts/archived',
         },
       ],
     },
@@ -115,34 +115,34 @@ const data = {
   navSecondary: [
     {
       title: 'Settings',
-      url: '#',
+      url: '/settings',
       icon: IconSettings,
     },
     {
       title: 'Get Help',
-      url: '#',
+      url: '/support',
       icon: IconHelp,
     },
     {
       title: 'Search',
-      url: '#',
+      url: '/search',
       icon: IconSearch,
     },
   ],
   documents: [
     {
       name: 'Data Library',
-      url: '#',
+      url: '/data-library',
       icon: IconDatabase,
     },
     {
       name: 'Reports',
-      url: '#',
+      url: '/reports',
       icon: IconReport,
     },
     {
       name: 'Word Assistant',
-      url: '#',
+      url: '/word-assistant',
       icon: IconFileWord,
     },
   ],
@@ -158,7 +158,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <a href="/" aria-label="Ir para a página inicial">
                 <div className="flex h-8 w-fit">
                   <Logo />
                 </div>

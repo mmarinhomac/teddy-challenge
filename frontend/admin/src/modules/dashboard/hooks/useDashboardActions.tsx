@@ -34,7 +34,7 @@ export function useDashboardActions() {
 
   useEffect(() => {
     debounceTimeout('load-dashboard-data', loadData, 300, 'teddyAdminLayer');
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { loadData };
 }

@@ -40,8 +40,9 @@ export function useSignIn() {
       setTimeout(() => {
         navigate('/dashboard');
       }, 1500);
-    } catch (err: any) {
+    } catch {
       setUser(null);
+      toast.error('Ocorreu um erro na tentativa de login.');
     } finally {
       setLoading(false);
     }
