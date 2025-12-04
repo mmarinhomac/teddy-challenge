@@ -9,6 +9,7 @@ import { RootController } from './root.controller';
 import { HealthController } from './health.controller';
 import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { ClientsModule } from '../clients/clients.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
     }),
 
     AuthModule,
+    ClientsModule,
   ],
   controllers: [RootController, HealthController],
   providers: [
