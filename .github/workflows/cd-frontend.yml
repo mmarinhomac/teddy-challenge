@@ -9,6 +9,7 @@ jobs:
   deploy-frontend:
     name: Build and Deploy Frontend
     runs-on: ubuntu-latest
+    environment: production
     env:
       NX_APP_NAME: admin
       DIST_PATH: dist/admin
@@ -22,7 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
