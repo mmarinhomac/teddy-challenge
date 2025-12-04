@@ -48,3 +48,25 @@ jobs:
       - name: Build Affected Frontend
         # run: pnpm nx affected --target=build --base=$NX_BASE --head=$NX_HEAD --projects=admin
         run: pnpm nx run-many --target=build --projects=admin
+
+  trigger-cd:
+    name: Trigger CD Deployment
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build-and-test
+    if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    steps:
+      - name: Trigger CD Frontend Workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'cd-frontend.yml',
+              ref: context.ref,
+              inputs: {
+                tag: '${{ github.sha }}'
+              }
+            })

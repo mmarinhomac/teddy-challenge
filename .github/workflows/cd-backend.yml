@@ -1,18 +1,20 @@
-name: CD Backend
+name: CD - Deploy Backend Account Service (Triggered)
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Commit SHA tag for image versioning'
+        required: true
 
 jobs:
-  build-and-push:
+  deploy:
     name: Build and Push Container
     runs-on: ubuntu-latest
     environment: production
     env:
       IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/account-service
-      IMAGE_TAG: ${{ github.sha }}
+      IMAGE_TAG: ${{ github.event.inputs.tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

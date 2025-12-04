@@ -1,9 +1,11 @@
-name: CD Frontend
+name: CD Frontend Admin (Triggered)
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Commit SHA tag for deployment traceability'
+        required: true
 
 jobs:
   deploy-frontend:
@@ -15,6 +17,7 @@ jobs:
       DIST_PATH: dist/admin
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      DEPLOY_TAG: ${{ github.event.inputs.tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,10 +25,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
+          cache: pnpm
 
       - name: Enable Corepack
         run: corepack enable
+
+      - name: Install pnpm dependencies
+        run: pnpm install
 
       - name: Build frontend
         run: pnpm nx build $NX_APP_NAME --prod
@@ -42,4 +49,5 @@ jobs:
             --project $VERCEL_PROJECT_ID \
             --prod \
             --yes \
-            --token ${{ secrets.VERCEL_TOKEN }}
+            --token ${{ secrets.VERCEL_TOKEN }} \
+            --meta gitSha=$DEPLOY_TAG
