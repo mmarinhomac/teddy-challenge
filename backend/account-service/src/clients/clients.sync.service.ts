@@ -12,6 +12,9 @@ type ViewUpdate = {
   increment: number;
 };
 
+const VIEW_SYNC_CRON =
+  process.env.NODE_ENV === 'development' ? '*/10 * * * * *' : '*/5 * * * *';
+
 @Injectable()
 export class ClientsSyncService {
   private readonly logger = new Logger(ClientsSyncService.name);
@@ -25,7 +28,7 @@ export class ClientsSyncService {
     private readonly redisClient: Redis
   ) {}
 
-  @Cron('*/5 * * * *')
+  @Cron(VIEW_SYNC_CRON)
   async handleSyncViews(): Promise<void> {
     try {
       const keys = await this.scanViewKeys();
