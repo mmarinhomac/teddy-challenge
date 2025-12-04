@@ -10,6 +10,7 @@ import { HealthController } from './health.controller';
 import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ClientsModule } from '../clients/clients.module';
+import { RedisModule } from '../config/redis/redis.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ClientsModule } from '../clients/clients.module';
 
     AuthModule,
     ClientsModule,
+    RedisModule,
   ],
   controllers: [RootController, HealthController],
   providers: [
