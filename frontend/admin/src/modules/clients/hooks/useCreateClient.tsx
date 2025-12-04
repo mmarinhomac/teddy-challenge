@@ -9,6 +9,7 @@ import type { ClientFormValues } from '../context';
 import { clientFormValidationRules } from './formRules';
 import { useClientActions } from './useClientActions';
 import { formatDocument, normalizeDocument } from '../utils/document';
+import { getApiErrorMessage } from '../utils/error';
 
 export function useCreateClient() {
   const { setLoading, loading, setDrawerOpen } = useClient();
@@ -45,7 +46,11 @@ export function useCreateClient() {
         const { data, error } = await accountService.clients.create(payload);
 
         if (error || !data) {
-          toast.error('Não foi possível criar o cliente.');
+          const message = getApiErrorMessage(
+            error,
+            'Não foi possível criar o cliente.'
+          );
+          toast.error(message);
           return;
         }
 
@@ -54,7 +59,11 @@ export function useCreateClient() {
         reset();
         setDrawerOpen(false);
       } catch (error) {
-        toast.error('Erro inesperado ao criar o cliente.');
+        const message = getApiErrorMessage(
+          error,
+          'Erro inesperado ao criar o cliente.'
+        );
+        toast.error(message);
         console.error('[clients] create error', error);
       } finally {
         setLoading(false);

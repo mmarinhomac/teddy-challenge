@@ -5,6 +5,7 @@ import accountService from '@teddy/api-services/account-service';
 import type { Client } from '@teddy/api-services/account-service/clients';
 
 import { useClient } from '../context';
+import { getApiErrorMessage } from '../utils/error';
 
 export function useClientActions() {
   const {
@@ -15,33 +16,12 @@ export function useClientActions() {
     setLoading,
   } = useClient();
 
-  const resolveErrorMessage = useCallback(
-    (error: unknown, fallback: string) => {
-      if (error && typeof error === 'object') {
-        type MaybeAxiosError = {
-          response?: {
-            data?: {
-              message?: string;
-            };
-          };
-        };
-
-        const message = (error as MaybeAxiosError).response?.data?.message;
-        if (typeof message === 'string' && message.trim().length > 0) {
-          return message;
-        }
-      }
-      return fallback;
-    },
-    []
-  );
-
   const listClients = useCallback(async (): Promise<boolean> => {
     try {
       setClientsLoading(true);
       const { data, error } = await accountService.clients.list();
       if (error) {
-        const message = resolveErrorMessage(
+        const message = getApiErrorMessage(
           error,
           'Não foi possível carregar os clientes.'
         );
@@ -55,7 +35,7 @@ export function useClientActions() {
       return true;
     } catch (error) {
       console.error('[clients] list error', error);
-      const message = resolveErrorMessage(
+      const message = getApiErrorMessage(
         error,
         'Não foi possível carregar os clientes.'
       );
@@ -65,7 +45,7 @@ export function useClientActions() {
     } finally {
       setClientsLoading(false);
     }
-  }, [resolveErrorMessage, setClients, setClientsLoaded, setClientsLoading]);
+  }, [setClients, setClientsLoaded, setClientsLoading]);
 
   const getClientById = useCallback(
     async (id: string): Promise<Client | null> => {
@@ -73,7 +53,7 @@ export function useClientActions() {
         setLoading(true);
         const { data, error } = await accountService.clients.findById(id);
         if (error || !data) {
-          const message = resolveErrorMessage(
+          const message = getApiErrorMessage(
             error,
             'Não foi possível carregar os dados do cliente.'
           );
@@ -86,7 +66,7 @@ export function useClientActions() {
         return data;
       } catch (error) {
         console.error('[clients] detail error', error);
-        const message = resolveErrorMessage(
+        const message = getApiErrorMessage(
           error,
           'Não foi possível carregar os dados do cliente.'
         );
@@ -96,7 +76,7 @@ export function useClientActions() {
         setLoading(false);
       }
     },
-    [resolveErrorMessage, setLoading, setSelectedClient]
+    [setLoading, setSelectedClient]
   );
 
   const deleteClient = useCallback(
@@ -105,7 +85,7 @@ export function useClientActions() {
         setLoading(true);
         const { error } = await accountService.clients.remove(id);
         if (error) {
-          const message = resolveErrorMessage(
+          const message = getApiErrorMessage(
             error,
             'Não foi possível remover o cliente.'
           );
@@ -118,7 +98,7 @@ export function useClientActions() {
         return true;
       } catch (error) {
         console.error('[clients] delete error', error);
-        const message = resolveErrorMessage(
+        const message = getApiErrorMessage(
           error,
           'Não foi possível remover o cliente.'
         );
@@ -128,7 +108,7 @@ export function useClientActions() {
         setLoading(false);
       }
     },
-    [resolveErrorMessage, setClients, setLoading]
+    [setClients, setLoading]
   );
 
   return {

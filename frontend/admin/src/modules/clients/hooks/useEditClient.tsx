@@ -7,6 +7,7 @@ import accountService from '@teddy/api-services/account-service';
 import { useClient, type ClientFormValues } from '../context';
 import { clientFormValidationRules } from './formRules';
 import { formatDocument, normalizeDocument } from '../utils/document';
+import { getApiErrorMessage } from '../utils/error';
 
 export function useEditClient() {
   const {
@@ -89,7 +90,11 @@ export function useEditClient() {
         );
 
         if (error || !data) {
-          toast.error('Não foi possível atualizar o cliente.');
+          const message = getApiErrorMessage(
+            error,
+            'Não foi possível atualizar o cliente.'
+          );
+          toast.error(message);
           return;
         }
 
@@ -100,7 +105,11 @@ export function useEditClient() {
         closeDrawer();
       } catch (error) {
         console.error('[clients] update error', error);
-        toast.error('Erro inesperado ao atualizar o cliente.');
+        const message = getApiErrorMessage(
+          error,
+          'Erro inesperado ao atualizar o cliente.'
+        );
+        toast.error(message);
       } finally {
         setLoading(false);
       }
