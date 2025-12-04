@@ -1,5 +1,4 @@
 import { XIcon } from 'lucide-react';
-import { IconPlus } from '@tabler/icons-react';
 
 import { Button } from '@/shadcn/components/button';
 import {
@@ -9,16 +8,13 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/shadcn/components/drawer';
-
 import { useClient } from '../context';
-import { useCreateClient } from '../hooks/useCreateClient';
+import { useEditClient } from '../hooks/useEditClient';
 import { ClientFormFields } from './client-form-fields';
 
-export function CreateClientDrawer() {
-  const { drawerOpen, setDrawerOpen } = useClient();
-
+export function EditClientDrawer() {
+  const { editingClient, setEditDrawerOpen } = useClient();
   const {
     registerField,
     watch,
@@ -27,31 +23,29 @@ export function CreateClientDrawer() {
     onSubmit,
     loading,
     handleDocumentChange,
-  } = useCreateClient();
+    editDrawerOpen,
+    closeDrawer,
+  } = useEditClient();
 
   const statusValue = watch('status') ?? 'active';
   const documentValue = watch('document') ?? '';
 
+  if (!editingClient) {
+    return null;
+  }
+
   return (
     <Drawer
-      direction={'right'}
-      open={drawerOpen}
-      onOpenChange={(bool) => {
-        if (bool === false) {
-          // customResetForm();
-          // setEditOn(false);
+      direction="right"
+      open={editDrawerOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          closeDrawer();
+        } else {
+          setEditDrawerOpen(true);
         }
-        // setCampaignDrawerOpen(bool);
-        setDrawerOpen(bool);
       }}
     >
-      <DrawerTrigger asChild>
-        <Button variant="outline" size="sm">
-          <IconPlus />
-          Novo Cliente
-        </Button>
-      </DrawerTrigger>
-
       <DrawerContent
         data-vaul-no-drag
         className="z-1101 !h-full !max-h-none !w-full !m-0 !max-w-none md:!max-w-[600px]"
@@ -62,11 +56,11 @@ export function CreateClientDrawer() {
         >
           <DrawerHeader className="flex flex-row items-center justify-between">
             <DrawerTitle className="text-xl font-semibold">
-              Novo Cliente
+              Editar Cliente
             </DrawerTitle>
 
             <DrawerClose asChild>
-              <Button variant="ghost">
+              <Button variant="ghost" type="button">
                 <XIcon />
               </Button>
             </DrawerClose>
@@ -89,10 +83,10 @@ export function CreateClientDrawer() {
           <div className="mt-auto">
             <DrawerFooter>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Salvando...' : 'Salvar Cliente'}
+                {loading ? 'Atualizando...' : 'Salvar Alterações'}
               </Button>
               <DrawerClose asChild>
-                <Button type="button" variant="outline">
+                <Button type="button" variant="outline" onClick={closeDrawer}>
                   Cancelar
                 </Button>
               </DrawerClose>

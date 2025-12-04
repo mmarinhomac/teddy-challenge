@@ -1,58 +1,24 @@
 import { useCallback } from 'react';
-import { useFormContext, type RegisterOptions } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import accountService from '@teddy/api-services/account-service';
 
 import { useClient } from '../context';
 import type { ClientFormValues } from '../context';
-import {
-  formatDocument,
-  isValidDocument,
-  normalizeDocument,
-} from '../utils/document';
-
-type ValidationRules = {
-  [K in keyof ClientFormValues]: RegisterOptions<ClientFormValues, K>;
-};
-
-const validationRules: ValidationRules = {
-  name: {
-    required: 'O nome é obrigatório.',
-    minLength: {
-      value: 3,
-      message: 'O nome deve ter ao menos 3 caracteres.',
-    },
-  },
-  email: {
-    required: 'O e-mail é obrigatório.',
-    pattern: {
-      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      message: 'Informe um e-mail válido.',
-    },
-  },
-  document: {
-    required: 'O documento é obrigatório.',
-    validate: (value) =>
-      (isValidDocument(value) && true) || 'Informe um CPF/CNPJ válido.',
-  },
-  status: {
-    required: 'Selecione um status.',
-    validate: (value) =>
-      value === 'active' ||
-      value === 'inactive' ||
-      'Selecione um status válido.',
-  },
-};
+import { clientFormValidationRules } from './formRules';
+import { useClientActions } from './useClientActions';
+import { formatDocument, normalizeDocument } from '../utils/document';
 
 export function useCreateClient() {
   const { setLoading, loading, setDrawerOpen } = useClient();
+  const { listClients } = useClientActions();
   const form = useFormContext<ClientFormValues>();
   const { register, handleSubmit, reset, setValue, watch, formState } = form;
 
   const registerField = <TFieldName extends keyof ClientFormValues>(
     field: TFieldName
-  ) => register(field, validationRules[field]);
+  ) => register(field, clientFormValidationRules[field]);
 
   const handleDocumentChange = useCallback(
     (value: string) => {
@@ -84,6 +50,7 @@ export function useCreateClient() {
         }
 
         toast.success('Cliente criado com sucesso.');
+        await listClients();
         reset();
         setDrawerOpen(false);
       } catch (error) {
@@ -93,7 +60,7 @@ export function useCreateClient() {
         setLoading(false);
       }
     },
-    [reset, setDrawerOpen, setLoading]
+    [listClients, reset, setDrawerOpen, setLoading]
   );
 
   const onSubmit = handleSubmit(submitHandler);

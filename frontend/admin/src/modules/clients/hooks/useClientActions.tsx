@@ -36,7 +36,7 @@ export function useClientActions() {
     []
   );
 
-  const listClients = useCallback(async () => {
+  const listClients = useCallback(async (): Promise<boolean> => {
     try {
       setClientsLoading(true);
       const { data, error } = await accountService.clients.list();
@@ -47,11 +47,12 @@ export function useClientActions() {
         );
         toast.error(message);
         setClientsLoaded(false);
-        return;
+        return false;
       }
 
       setClients(data ?? []);
       setClientsLoaded(true);
+      return true;
     } catch (error) {
       console.error('[clients] list error', error);
       const message = resolveErrorMessage(
@@ -60,6 +61,7 @@ export function useClientActions() {
       );
       toast.error(message);
       setClientsLoaded(false);
+      return false;
     } finally {
       setClientsLoading(false);
     }

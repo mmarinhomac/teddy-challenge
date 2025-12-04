@@ -81,8 +81,12 @@ import {
   TabsTrigger,
 } from '@/shadcn/components/tabs';
 
+import { toast } from 'sonner';
+
 import { CreateClientDrawer } from './create-client';
 import { DialogConfirmation } from './dialog-confirmation';
+import { EditClientDrawer } from './edit-client';
+import { ViewClientDrawer } from './view-client';
 import { useClient } from '../context';
 import { useClientActions } from '../hooks/useClientActions';
 import { formatDocument } from '../utils/document';
@@ -153,12 +157,26 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 }
 
 export function DataTable() {
-  const { clients, clientsLoaded, clientsLoading } = useClient();
-  const { deleteClient } = useClientActions();
+  const {
+    clients,
+    clientsLoaded,
+    clientsLoading,
+    setEditingClient,
+    setEditDrawerOpen,
+    setViewingClientId,
+    setViewDrawerOpen,
+  } = useClient();
+  const { deleteClient, listClients } = useClientActions();
   const [clientToDelete, setClientToDelete] = React.useState<z.infer<
     typeof schema
   > | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!clientsLoaded && !clientsLoading) {
+      void listClients();
+    }
+  }, [clientsLoaded, clientsLoading, listClients]);
 
   const handleDeleteRequest = React.useCallback(
     (client: z.infer<typeof schema>) => {
@@ -166,6 +184,28 @@ export function DataTable() {
       setDeleteDialogOpen(true);
     },
     []
+  );
+
+  const handleEditRequest = React.useCallback(
+    (client: z.infer<typeof schema>) => {
+      const originalClient = clients.find(({ id }) => id === client.id);
+      if (!originalClient) {
+        toast.error('Cliente não encontrado para edição.');
+        return;
+      }
+
+      setEditingClient(originalClient);
+      setEditDrawerOpen(true);
+    },
+    [clients, setEditDrawerOpen, setEditingClient]
+  );
+
+  const handleViewRequest = React.useCallback(
+    (client: z.infer<typeof schema>) => {
+      setViewingClientId(client.id);
+      setViewDrawerOpen(true);
+    },
+    [setViewingClientId, setViewDrawerOpen]
   );
 
   const handleDeleteDialogChange = React.useCallback((open: boolean) => {
@@ -288,8 +328,22 @@ export function DataTable() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem>Ver detalhes</DropdownMenuItem>
-              <DropdownMenuItem>Editar</DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(event) => {
+                  event.preventDefault();
+                  handleViewRequest(row.original);
+                }}
+              >
+                Ver detalhes
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(event) => {
+                  event.preventDefault();
+                  handleEditRequest(row.original);
+                }}
+              >
+                Editar
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
@@ -305,7 +359,7 @@ export function DataTable() {
         ),
       },
     ],
-    [handleDeleteRequest]
+    [handleDeleteRequest, handleEditRequest, handleViewRequest]
   );
 
   const mappedData = React.useMemo(() => {
@@ -457,6 +511,8 @@ export function DataTable() {
             </DropdownMenu>
 
             <CreateClientDrawer />
+            <EditClientDrawer />
+            <ViewClientDrawer />
           </div>
         </div>
         <TabsContent

@@ -17,6 +17,10 @@ interface ClientsContextValue {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   drawerOpen: boolean;
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  editDrawerOpen: boolean;
+  setEditDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  viewDrawerOpen: boolean;
+  setViewDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   clients: Client[];
   setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   clientsLoading: boolean;
@@ -25,6 +29,10 @@ interface ClientsContextValue {
   setClientsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   selectedClient: Client | null;
   setSelectedClient: React.Dispatch<React.SetStateAction<Client | null>>;
+  editingClient: Client | null;
+  setEditingClient: React.Dispatch<React.SetStateAction<Client | null>>;
+  viewingClientId: string | null;
+  setViewingClientId: React.Dispatch<React.SetStateAction<string | null>>;
   form: UseFormReturn<ClientFormValues>;
 }
 
@@ -37,10 +45,14 @@ interface ClientsProviderProps {
 export function ClientsProvider({ children }: ClientsProviderProps) {
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+  const [viewDrawerOpen, setViewDrawerOpen] = useState(false);
   const [clients, setClients] = useState<Client[]>([]);
   const [clientsLoading, setClientsLoading] = useState(false);
   const [clientsLoaded, setClientsLoaded] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [viewingClientId, setViewingClientId] = useState<string | null>(null);
 
   const form = useForm<ClientFormValues>({
     mode: 'onSubmit',
@@ -57,6 +69,10 @@ export function ClientsProvider({ children }: ClientsProviderProps) {
     setLoading,
     drawerOpen,
     setDrawerOpen,
+    editDrawerOpen,
+    setEditDrawerOpen,
+    viewDrawerOpen,
+    setViewDrawerOpen,
     clients,
     setClients,
     clientsLoading,
@@ -65,6 +81,10 @@ export function ClientsProvider({ children }: ClientsProviderProps) {
     setClientsLoaded,
     selectedClient,
     setSelectedClient,
+    editingClient,
+    setEditingClient,
+    viewingClientId,
+    setViewingClientId,
     form,
   };
 
