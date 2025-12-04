@@ -1,6 +1,4 @@
-# .github/workflows/ci-frontend.yml
-
-name: CI - Frontend (React App)
+name: CI - Frontend (Admin)
 
 on:
   push:
@@ -25,7 +23,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install pnpm dependencies
         run: pnpm install
