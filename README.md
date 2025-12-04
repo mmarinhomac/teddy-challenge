@@ -64,6 +64,35 @@ O stack privilegia serviços gerenciados para reduzir a superfície operacional.
 
 **Resultado:** A pressão de escrita no banco vira pulsos previsíveis, o Redis absorve o hot path e o rastreamento de `view_count` escala de forma independente do CRUD principal.
 
+## </> How to Run on Docker
+
+Backend - Account Service + Postgres + Redis
+```
+docker compose -f ./backend/account-service/docker-compose.yml up -d --build
+```
+Backend Seeds - Create Initial Users and Clients to Compose Dashboard
+```
+nx seeds account-service
+```
+Frontend - Admin UI
+```
+docker compose -f ./frontend/admin/docker-compose.yml up -d --build
+```
+
+## Checklist requirements
+
+- ✅ Funcionalidades
+- ✅ Arquitetura
+- ✅ Robustez
+- ✅ Design
+- ✅ Tools 
+- ✅ CI/CD
+- ❌ Testes Únitarios e E2E
+- ⚠️ Observabilidade Partial
+
+<br/>
+<br/>
+
 ![alt](./presentation/signin.png)
 ![alt](./presentation/dash.png)
 
