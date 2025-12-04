@@ -40,7 +40,9 @@ export class DashboardService {
       clientsCreatedLast30Minutes,
       growthData,
     ] = await Promise.all([
-      this.clientsRepository.count({ where: { deletedAt: IsNull() } }),
+      this.clientsRepository.count({
+        where: { deletedAt: IsNull(), status: 'active' },
+      }),
       this.usersRepository.count(),
       this.getTotalClientViews(),
       this.getClientsCreatedLast30Minutes(),
