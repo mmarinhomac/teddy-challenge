@@ -13,7 +13,10 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  const allowedOrigins = configService.get<string>('CORS_ORIGIN')?.split(',');
+  const allowedOrigins = configService
+    .get<string>('CORS_ORIGIN', 'http://localhost:5173')
+    .split(',')
+    .map((origin: string) => origin.trim());
 
   app.enableCors({
     origin: allowedOrigins, // Usa a lista de origens
