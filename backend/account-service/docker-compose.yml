@@ -6,15 +6,16 @@ services:
     env_file:
       - .env
     environment:
-      PORT: ${PORT:?PORT is required}
+      PORT: ${PORT:-3000}
       DB_HOST: db
-      DB_PORT: ${DB_PORT:?DB_PORT is required}
-      DB_USER: ${DB_USER:?DB_USER is required}
-      DB_PASS: ${DB_PASS:?DB_PASS is required}
-      DB_NAME: ${DB_NAME:?DB_NAME is required}
-      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS:-postgres}
+      DB_NAME: ${DB_NAME:-teddy}
+      JWT_SECRET: ${JWT_SECRET:-supersecret}
+      JWT_EXPIRES: ${JWT_EXPIRES:-1d}
       REDIS_HOST: redis
-      REDIS_PORT: ${REDIS_PORT:?REDIS_PORT is required}
+      REDIS_PORT: ${REDIS_PORT:-6379}
     ports:
       - '3000:3000'
     depends_on:

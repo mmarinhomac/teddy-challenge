@@ -66,6 +66,14 @@ O stack privilegia serviços gerenciados para reduzir a superfície operacional.
 
 ## </> How to Run on Docker
 
+Node Version
+```
+24.11.1
+```
+Create a .env file on ./backend/account-service
+```
+./backend/account-service/.env
+```
 Backend - Account Service + Postgres + Redis
 ```
 docker compose -f ./backend/account-service/docker-compose.yml up -d --build
